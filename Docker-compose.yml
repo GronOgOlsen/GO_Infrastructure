@@ -1,0 +1,59 @@
+services:
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    ports:
+      - "27019:27017"
+    container_name: mongodb
+    hostname: mongodb
+    volumes:
+      - mongodb_data_container:/data/db
+    networks:
+      - auctionnetwork
+  
+  vaulthost:
+    image: hashicorp/vault:latest
+    restart: on-failure:10
+    ports:
+      - "8200:8201"
+    environment:
+      VAULT_ADDR: 'https://0.0.0.0:8201'
+      VAULT_API_ADDR: 'http://0.0.0.0:8200'
+      VAULT_LOCAL_CONFIG:
+        '{"listener": [{"tcp":{"address": "0.0.0.0:8201",
+        "tls_disable": "0", "tls_cert_file":"/data/cert.pem",
+        "tls_key_file":"/data/key.pem"}}],
+        "default_lease_ttl": "168h", "max_lease_ttl": "720h"},
+        "ui": true}'
+      VAULT_DEV_ROOT_TOKEN_ID: '00000000-0000-0000-0000-000000000000'
+      VAULT_TOKEN: '00000000-0000-0000-0000-000000000000'
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./vault-volume:/data
+    healthcheck:
+      retries: 5
+    command: 'server -dev -dev-root-token-id="00000000-0000-0000-0000-000000000000"'
+    networks:
+      - auctionnetwork
+
+  vault-init:
+    image: hashicorp/vault:latest
+    command: sh "/app/vault-init.sh"
+    depends_on:
+      - vaulthost
+    healthcheck:
+      retries: 5
+    volumes:
+      - ./vault-init/vault_init.sh:/app/vault-init.sh
+    networks:
+      - auctionnetwork
+
+networks:
+  auctionnetwork:
+    driver: bridge
+
+volumes:
+  mongodb_data_container:
