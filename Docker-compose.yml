@@ -54,7 +54,7 @@ services:
 networks:
   auctionnetwork:
     driver: bridge
-    external: true
+    external: false
 
 volumes:
   mongodb_data_container:
