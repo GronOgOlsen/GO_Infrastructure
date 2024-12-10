@@ -51,6 +51,15 @@ services:
     networks:
       - auctionnetwork
 
+  rabbitmq:
+    image: rabbitmq:management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"   # Port til RabbitMQ messaging
+      - "15672:15672" # Port til RabbitMQ Management UI
+    networks:
+      - auctionnetwork
+
 networks:
   auctionnetwork:
     driver: bridge
