@@ -60,7 +60,6 @@ services:
     networks:
       - auctionnetwork
 
-  # Implementing Loki and Grafana
   loki:
     image: grafana/loki
     ports:
@@ -68,6 +67,8 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     container_name: loki
     hostname: loki
+    volumes:
+      - loki_data:/loki
     networks:
       - auctionnetwork
 
@@ -77,6 +78,8 @@ services:
       - "3000:3000"
     container_name: grafana
     hostname: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
     networks:
       - auctionnetwork
 
@@ -87,3 +90,5 @@ networks:
 
 volumes:
   mongodb_data_container:
+  grafana_data:
+  loki_data:
