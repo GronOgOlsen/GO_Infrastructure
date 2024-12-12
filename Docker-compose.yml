@@ -15,6 +15,7 @@ services:
   
   vaulthost:
     image: hashicorp/vault:latest
+    container_name: vaulthost
     restart: on-failure:10
     ports:
       - "8200:8201"
@@ -41,6 +42,7 @@ services:
 
   vault-init:
     image: hashicorp/vault:latest
+    container_name: vault-init
     command: sh "/app/vault-init.sh"
     depends_on:
       - vaulthost
