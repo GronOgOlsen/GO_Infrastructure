@@ -40,10 +40,10 @@ services:
     networks:
       - auctionnetwork
 
-  vault-init:
+vault-init:
     image: hashicorp/vault:latest
     container_name: vault-init
-    command: sh "/app/vault-init.sh"
+    command: sh -c "sed -i 's/\r//' /app/vault-init.sh && sh /app/vault-init.sh"
     depends_on:
       - vaulthost
     healthcheck:
