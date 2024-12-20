@@ -6,6 +6,4 @@ Kør denne inden du kører docker-compose for at oprette et netværk:
 docker network create auctionnetwork
 docker network inspect auctionnetwork 
 
--
-
 
